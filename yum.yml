@@ -1,0 +1,31 @@
+- name: Configuring yum
+  hosts: yum
+  
+  tasks:
+  - name: Add repository from dvd
+    yum_repository:
+      name: AppStream
+      description: AppStream
+      baseurl: file:///run/media/root/RHEL-8-0-0-BaseOS-x86_64/AppStream
+      gpgcheck: no
+    
+  - name: Add repository from dvd  
+    yum_repository:
+      name: BaseOS
+      description: BaseOS
+      baseurl: file:///run/media/root/RHEL-8-0-0-BaseOS-x86_64/BaseOS
+      gpgcheck: no
+
+  - name: Add repository from internet 
+    yum:
+      name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.noarch.rpm
+      state: present
+    ignore_errors: yes
+ 
+  - name: Add repository from internet 
+    yum:
+      name: https://download1.rpmfusion.org/free/el/rpmfusion-free-release-8.noarch.rpm
+      state: present
+    ignore_errors: yes
+
+

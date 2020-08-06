@@ -1,0 +1,27 @@
+- name: Configuring and Insalling Docker
+  hosts: docker
+  tasks:
+
+  - name: Add repository for docker
+    yum_repository:
+      name: docker
+      description: Docker
+      baseurl: https://download.docker.com/linux/centos/7/x86_64/stable/
+      gpgcheck: no
+
+  - name: Installing Extra packages for docker
+    yum:
+      name: https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
+      state: present
+
+  - name: Installing Docker
+    package:
+      name: docker-ce
+      state: present
+
+  - name: Starting Docker Service
+    service:
+      name: docker
+      state: started
+      enabled: yes
+

@@ -1,0 +1,40 @@
+- name: Creating docker container with httpd image
+  hosts: docker
+  vars:
+    - image: "httpd"
+  tasks:
+  
+  - name: SELinux status
+    command: getenforce
+    register: se
+
+  - debug:
+      var: se.stdout
+
+  - name: Put SELinux in permissive mode
+    selinux:
+      policy: targeted
+      state: permissive
+    when: se.stdout == "Enforcing" 
+         
+  - name: Copying web pages
+    copy:
+      src: index.html
+      dest: /root/webpages/
+
+  - name: pull an image
+    docker_image:
+      name: "{{ image }}"
+      source: pull 
+    ignore_errors: yes
+
+  - name: Create a web container
+    docker_container:
+      name: myweb
+      image: "{{ image }}"
+      exposed_ports:
+        - 80
+      ports:
+        - "85:80"
+      volumes:
+        - /root/webpages/:/usr/local/apache2/htdocs
